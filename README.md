@@ -107,7 +107,6 @@ object to exchange data with a server. For example:
    }
    server->stop();
    ```
-You can find a detailed description of the API in docs/API/index.html.
 
 
 Development and Contributing
