@@ -18,6 +18,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+namespace libiris {
+
 #define TIMEOUT                  5
 #define UDPPACKETSIZE            1400
 #define EPOLL_QUEUE_LEN          1000
@@ -171,6 +173,9 @@ class Server : public Endpoint {
   int32_t get_client(Client *client);
   
 };
+
+} // End of namespace
+
 #endif
  
 
