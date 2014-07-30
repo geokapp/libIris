@@ -11,7 +11,7 @@
 #include <netdb.h>
 #include "../src/libiris.h"
 
-using namespace std;
+using namespace libiris;
 
 int main(int argc, char *argv[]) {
   char s_addr[INET6_ADDRSTRLEN];
@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
 
   status = server.start(NULL, "9999", 10);
   if (status) {
-    cout << "(Server) Error on startup.\n";
+    std::cout << "(Server) Error on startup.\n";
     return 1;
   } else {
-    cout << "(Server) Up and running!\n";
+    std::cout << "(Server) Up and running!\n";
   }
   memset(data, 0, 100);
 
@@ -36,25 +36,25 @@ int main(int argc, char *argv[]) {
     Client *client = new Client;
     status = server.get_client(client);
     if (status ) {
-      cout << "(Server) get_client error.\n";
+      std::cout << "(Server) get_client error.\n";
       delete client;
       break;
     }
     //
     // A client reached. Print its data. 
     //
-    cout << "(Server) Client reached.\n";
+    std::cout << "(Server) Client reached.\n";
     status = server.receive_data(data, 100, client);
-    cout << data << endl;
+    std::cout << data << std::endl;
     client->detach();
     delete client;
   }
-  cout << "(Server) Stopping...\n";
+  std::cout << "(Server) Stopping...\n";
   status = server.stop();
   if (status) {
-    cout << "(Server) Error on stop.\n";
+    std::cout << "(Server) Error on stop.\n";
     return 1;
   } else {
-    cout << "(Server) Stopped!\n";
+    std::cout << "(Server) Stopped!\n";
   }
 }
