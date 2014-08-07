@@ -68,7 +68,7 @@ class Endpoint {
   int32_t send_data(const void *data, const size_t data_len,
 		    Endpoint *client = NULL);
   int32_t receive_data(void *data, size_t data_len,
-		       Endpoint *clientInfo = NULL);
+		       Endpoint *client = NULL);
 
  protected:
   int32_t *sockets();
