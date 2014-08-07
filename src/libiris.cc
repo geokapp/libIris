@@ -27,7 +27,7 @@
 #include <errno.h>
 #include "libiris.h"
 
-using namespace std;
+using namespace libiris;
 
 /**
  * @name Endpoint - Constructor.

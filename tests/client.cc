@@ -11,7 +11,7 @@
 #include <iostream>
 #include "../src/libiris.h"
 
-using namespace std;
+using namespace libiris;
 
 int main(int argc, char *argv[]) {
   
@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
   
   status = client.attach("localhost", "9999");    
   if (status) {
-    cout << "(Client) Error connecting with the server.\n";
+    std::cout << "(Client) Error connecting with the server.\n";
   } else {
     status = client.send_data(data, strlen(data), NULL);
   }
-  cout << "(Client) Detaching...\n";
+  std::cout << "(Client) Detaching...\n";
   client.detach();
  
   return 0;
