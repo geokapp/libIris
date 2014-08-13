@@ -11,7 +11,7 @@
 #include <iostream>
 #include "../src/libiris.h"
 
-using namespace libiris;
+using namespace iris;
 
 int main(int argc, char *argv[]) {
   

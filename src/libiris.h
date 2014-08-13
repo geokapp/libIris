@@ -8,7 +8,7 @@
  * This is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License version 2.1, as published by the Free Software 
- * Foundation.  See file COPYING.
+ * Foundation.  See file LICENSE.
  * 
  */
  
@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace libiris {
+namespace iris {
 
 #define TIMEOUT                  5
 #define UDPPACKETSIZE            1400
@@ -70,10 +70,11 @@ class Endpoint {
   int32_t receive_data(void *data, size_t data_len,
 		       Endpoint *client = NULL);
 
- protected:
   int32_t *sockets();
   int32_t sockets_len();
   struct addrinfo *address_info();
+
+ protected:
   int32_t receive_timeout(int32_t sock, long sec, long usec);
   void set_canon_null(struct addrinfo *head);
   void deleteGAINode(struct addrinfo **head, struct addrinfo **res,

@@ -11,7 +11,7 @@
 #include <netdb.h>
 #include "../src/libiris.h"
 
-using namespace libiris;
+using namespace iris;
 
 int main(int argc, char *argv[]) {
   char s_addr[INET6_ADDRSTRLEN];
