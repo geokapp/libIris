@@ -181,23 +181,23 @@ int32_t Endpoint::send_data(const void *data, const size_t data_len, Endpoint *c
     target = this;
   
   // Handle TCP send.
-  if (target->m_protocol == Endpoint::TCP) {
+  if (target->protocol() == Endpoint::TCP) {
     while (total < data_len) {
-      bytes = send(target->m_sockets[0], ((char*)data) + total, bytes_left, 0); 
+      bytes = send(target->sockets()[0], ((char*)data) + total, bytes_left, 0); 
       if (bytes == -1)  {
 	return -1; 
       } 
       total += bytes;
       bytes_left -= bytes;
     }
-  } else if (target->m_protocol == Endpoint::UDP) { 
+  } else if (target->protocol() == Endpoint::UDP) { 
     // We have to split data into packets.
     for (int32_t i = 0; i <= packets; i++) {
       // We have only one packet to send.
       if (packets < 1) {
-	bytes = sendto(target->m_sockets[0], data, data_len, 0,
-		       target->m_address_info->ai_addr,
-		       target->m_address_info->ai_addrlen);
+	bytes = sendto(target->sockets()[0], data, data_len, 0,
+		       target->address_info()->ai_addr,
+		       target->address_info()->ai_addrlen);
 	if (bytes == -1) {
 	  return -1; 
 	} 
@@ -205,18 +205,18 @@ int32_t Endpoint::send_data(const void *data, const size_t data_len, Endpoint *c
       } else {
 	// We have got more than one packets
 	if (i < packets) {
-	  bytes = sendto(target->m_sockets[0], data, UDPPACKETSIZE, 0,
-			 target->m_address_info->ai_addr,
-			 target->m_address_info->ai_addrlen);
+	  bytes = sendto(target->sockets()[0], data, UDPPACKETSIZE, 0,
+			 target->address_info()->ai_addr,
+			 target->address_info()->ai_addrlen);
 	  if (bytes == -1) {
 	    return -1; 
 	  } 
 	  total += bytes;
 	  data = ((char*)data) + UDPPACKETSIZE;
 	} else {
-	  bytes = sendto(target->m_sockets[0], data, packet_left, 0,
-			 target->m_address_info->ai_addr,
-			 target->m_address_info->ai_addrlen);
+	  bytes = sendto(target->sockets()[0], data, packet_left, 0,
+			 target->address_info()->ai_addr,
+			 target->address_info()->ai_addrlen);
 	  if (bytes == -1) {
 	    return -1; 
 	  } 
@@ -265,9 +265,9 @@ int32_t Endpoint::receive_data(void *data, size_t data_len, Endpoint *client) {
   total = bytes = 0;
   client_sin_size = sizeof(client_addr);
   
-  if (target->m_protocol == Endpoint::TCP) {
+  if (target->protocol() == Endpoint::TCP) {
     while(total < data_len) {
-      bytes = recv(target->m_sockets[0], data_ptr, bytes_left, 0);
+      bytes = recv(target->sockets()[0], data_ptr, bytes_left, 0);
       if (bytes == -1) {
 	return -1; 
       } 
@@ -280,9 +280,9 @@ int32_t Endpoint::receive_data(void *data, size_t data_len, Endpoint *client) {
       bytes_left -= bytes;
     }
     return (total);            
-  } else if (target->m_protocol == Endpoint::UDP) {         
+  } else if (target->protocol() == Endpoint::UDP) {         
     // Check if there are data to read.
-    time = receive_timeout(target->m_sockets[0], /*5*/ 0, 0);
+    time = receive_timeout(target->sockets()[0], /*5*/ 0, 0);
     switch (time) {
     case 0:
       // Timeout occured. 
@@ -292,7 +292,7 @@ int32_t Endpoint::receive_data(void *data, size_t data_len, Endpoint *client) {
       return -1;
     default:
       // We have a udp connection. Call recvfrom to read data. 
-      bytes = recvfrom(target->m_sockets[0], data, data_len,
+      bytes = recvfrom(target->sockets()[0], data, data_len,
 		       0, (struct sockaddr *)&client_addr, &client_sin_size);
       if (bytes == -1) {
 	return -1; 
@@ -803,6 +803,9 @@ int32_t Server::get_client(Client *client) {
     fprintf(stderr, "(get_client) Error: Client must not be NULL.\n");
     return 1;
   }
+
+  // Set client's protocol the same as server's
+  client->set_protocol(m_protocol);
   
   // Set the epoll events. 
   ev.events = EPOLLIN;
@@ -875,9 +878,11 @@ int32_t Server::get_client(Client *client) {
 	    new_client_done = 1;
 	    break;
 	  } else {
+	    // Set the client's socket descriptor the same as the server's.
+	    client->set_socket(m_sockets[j]);
 	    
 	    // We have a UDP Endpoint. lets block and wait for data.
-	    bytes = recvfrom(m_sockets[j], data, data_len, MSG_PEEK,
+	    bytes = recvfrom(client->sockets()[0], data, data_len, MSG_PEEK,
 			     (struct sockaddr *)client_addr, &client_sin_size);
 	    if (bytes < 0) {
 	      continue;
