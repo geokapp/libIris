@@ -482,7 +482,7 @@ void Client::set_socket(int32_t sock) {
  * @return The socket descriptor or UNUSED on error.
  */
 int32_t Client::get_socket() {
-  if (!m_sockets)
+  if (m_sockets)
     return m_sockets[0];
   else
     return UNUSED;
