@@ -228,10 +228,7 @@ int32_t Endpoint::send_data(const void *data, const size_t data_len, Endpoint *c
     // Unknown endpoint type.
     return -1;
   }
-  if (total < 0) 
-    return -1;
-  else 
-    return total;
+  return total;
 }
 
 /*
@@ -341,7 +338,7 @@ int32_t Endpoint::receive_timeout(int32_t sock, long sec, long usec) {
  * @return 0 on success, 1 on error.
  */
 int32_t Endpoint::cleanup() {
-  int32_t result;
+  int32_t result = 0;
   
   // Close sockets of TCP connections.  
   if (m_protocol == Endpoint::TCP) {
@@ -586,7 +583,7 @@ int32_t Client::attach(const char *host, const char *service) {
  * @return Void.
  */
 int32_t Client::detach() {
-  this->cleanup();
+  return this->cleanup();
 }
 
 /**
