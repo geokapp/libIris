@@ -589,7 +589,7 @@ int32_t Client::detach() {
 /**
  * Server - Constructor.
  *
- * Initializes a client object.
+ * Initializes a server object.
  */
 Server::Server() {
   m_protocol = Endpoint::TCP; // TCP is the default.
